@@ -5,9 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import jan.Edge;
-import jan.Graph;
-import jan.Vertex;
+import deps.Edge;
+import deps.Graph;
+import deps.Vertex;
 
 /**
  * Diese Klasse erlaubt es, einen gewichteten, ungerichteten Graphen zu

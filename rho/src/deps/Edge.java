@@ -1,4 +1,4 @@
-package jan;
+package deps;
 
 /**
  * <p>

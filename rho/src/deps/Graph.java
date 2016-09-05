@@ -1,6 +1,6 @@
-package jan;
+package deps;
 
-import jan.List;
+import deps.List;
 
 /**
  * <p>

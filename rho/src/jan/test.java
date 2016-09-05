@@ -2,6 +2,8 @@ package jan;
 
 import java.io.IOException;
 
+import deps.Graph;
+
 public class test {
 	
 	private Graph g;
