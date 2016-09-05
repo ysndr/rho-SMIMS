@@ -6,10 +6,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 import deps.Vertex;
 
 public class Gebiet {
-	private int m_UnitBonus;
+	
+	private Integer m_UnitBonus;
 	private ArrayList<String> m_FelderIds;
 	
 	public Gebiet(int UnitBonus, ArrayList<String> FelderIds)
@@ -60,5 +63,16 @@ public class Gebiet {
 		
 		return null;
 	}
+	
+	public String toData() {
+		Gson gson = new Gson();
+		return gson.toJson(this);	
+	}
+	
+	public static Gebiet fromData(String data){
+		Gson gson = new Gson();
+		return gson.fromJson(data, Gebiet.class);		
+	}
+	
 	
 }

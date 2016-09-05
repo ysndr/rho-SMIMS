@@ -1,5 +1,8 @@
 package game;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+
 import deps.Vertex;
 
 
@@ -47,5 +50,16 @@ public class Feld extends Vertex {
 				result.add(fl);
     	return result;
     }
+    
+    public String toData() {
+		Gson gson = new Gson();
+		return gson.toJson(this);	
+	}
+	
+	public static Feld fromData(String data){
+		Gson gson = new Gson();
+		return gson.fromJson(data, Feld.class);		
+	}
+    
     
 }
