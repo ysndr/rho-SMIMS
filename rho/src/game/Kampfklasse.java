@@ -1,4 +1,4 @@
-package jan;
+package game;
 
 public class Kampfklasse {
 	private int aP;
