@@ -3,11 +3,15 @@ package game;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import deps.Edge;
 import deps.Graph;
 import deps.Vertex;
+
+import game.Feld;
 
 /**
  * Diese Klasse erlaubt es, einen gewichteten, ungerichteten Graphen zu
@@ -56,6 +60,8 @@ public class Graphbauer {
 	private Graph derGraph;
 	private String graphString;
 
+	private HashMap<String, Feld> felderPool;
+
 	/**
 	 * eine Zeile in der Eingabedatei, die mit diesem String beginnt, wird als
 	 * Kommentar interpretiert und ignoriert.
@@ -82,6 +88,11 @@ public class Graphbauer {
 	 * Erzeugt einen Graphbauer. Der Graph sowie der Graphstring sind noch leer.
 	 */
 	public Graphbauer() {
+		init();
+	}
+
+	public Graphbauer(HashMap<String, Feld> fMap) {
+		felderPool = fMap;
 		init();
 	}
 
@@ -134,9 +145,9 @@ public class Graphbauer {
 
 			StringTokenizer strtok = new StringTokenizer(pKantenbeschreibung, Graphbauer.SYMBOLTRENNER);
 
-			double length = Double.parseDouble(strtok.nextToken());
-			String name1 = strtok.nextToken().trim();
-			String name2 = strtok.nextToken().trim();
+			double length = Double.parseDouble(strtok.nextToken()); // Kantenlaenge
+			String name1 = strtok.nextToken().trim(); // Knoten1
+			String name2 = strtok.nextToken().trim(); // Knoten2
 
 			// der Graphstring wird gebaut
 			if (!this.graphString.equals("")) {
@@ -145,24 +156,34 @@ public class Graphbauer {
 			this.graphString += "" + length + Graphbauer.SYMBOLTRENNER + name1 + Graphbauer.SYMBOLTRENNER + name2;
 
 			// Die Infos kommen in den Graphen
-			Vertex n_1 = this.derGraph.getVertex(name1);
+			if (felderPool != null) {
+				
+				Vertex n_1 = this.derGraph.getVertex(name1);
 
-			if (n_1 == null) {
-				n_1 = new Vertex(name1);
+				if (n_1 == null && felderPool.containsKey(name1)) {
+					n_1 = felderPool.get(name1);
+				}else if(n_1 == null){
+					n_1 = new Feld(name1);
+				}
+
+				Vertex n_2 = this.derGraph.getVertex(name2);
+
+				if (n_2 == null && felderPool.containsKey(name2)) {
+					n_2 = felderPool.get(name2);
+				}else if(n_2 == null){
+					n_2 = new Feld(name2);
+				}
+
+				this.derGraph.addVertex(n_1);
+				this.derGraph.addVertex(n_2);
+				
+				Edge e = new Edge(n_1, n_2, length);
+
+				this.derGraph.addEdge(e);
+				
+				
 			}
 
-			Vertex n_2 = this.derGraph.getVertex(name2);
-
-			if (n_2 == null) {
-				n_2 = new Vertex(name2);
-			}
-
-			this.derGraph.addVertex(n_1);
-			this.derGraph.addVertex(n_2);
-
-			Edge e = new Edge(n_1, n_2, length);
-
-			this.derGraph.addEdge(e);
 		}
 	}
 
