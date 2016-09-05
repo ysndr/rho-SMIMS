@@ -10,7 +10,7 @@ public class Kampfklasse {
 	}
 	
 	public String ermittleSieger() {
-		if((aP-vP)>0) {
+		if( (aP-vP) > 0) {
 			return "v";
 		} else {
 			return "a";

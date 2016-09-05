@@ -50,7 +50,7 @@ public class ManageClass {
 	{
 		Graphbauer builder = new Graphbauer();
 		try {
-			builder.fileToGraph("/Users/jan/eclipse/workspace/rho/src/jan/GraphbauerAnleitung");
+			builder.fileToGraph("data/GraphbauerAnleitung");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
