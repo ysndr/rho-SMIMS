@@ -55,13 +55,26 @@ public class Gebiet {
 			}
 			line = GebieteBR.readLine();
 			AnzahlGebiete++;
-		}
-		
-		
-		
+		}		
 		//erste Zeile ist Anzahl 
 		
 		return null;
+	}
+	
+	public static int getTeamBonus(ArrayList<Feld> felder, int teamId, ArrayList<Gebiet> gebiete)
+	{
+		int bon=0;
+		ArrayList<Feld> playerFelder = Feld.getFelderFromTeam(felder, teamId);
+		ArrayList<String> playerFelderIds = new ArrayList<String>();
+		for(Feld f : playerFelder)
+			playerFelderIds.add(f.getID());
+		for(Gebiet gb : gebiete)
+		{
+			if(playerFelderIds.containsAll(gb.getFelderIds())){
+				bon+=gb.getGebietBonus();
+			}
+		}
+		return bon;
 	}
 	
 	public String toData() {

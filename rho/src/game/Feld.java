@@ -13,6 +13,7 @@ public class Feld extends Vertex {
     
     public Feld(String pID){
     	super(pID);
+    	einheiten = new ArrayList<>();
     }
     
     public void addUnit(String typ, int n){
@@ -42,10 +43,10 @@ public class Feld extends Vertex {
     	zg = pZg;
     }
     
-    public static ArrayList<Feld> getFelderFromTeam(ArrayList<Feld> Gebiete, int teamId)
+    public static ArrayList<Feld> getFelderFromTeam(ArrayList<Feld> felder, int teamId)
     {
     	ArrayList<Feld> result = new ArrayList<Feld>();
-    	for(Feld fl : Gebiete)
+    	for(Feld fl : felder)
 			if (fl.getZg() == teamId)
 				result.add(fl);
     	return result;
