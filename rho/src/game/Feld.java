@@ -1,19 +1,39 @@
 package game;
 import java.util.ArrayList;
-
-import com.google.gson.Gson;
-
 import deps.Vertex;
-
 
 public class Feld extends Vertex {
     private ArrayList<Einheit>  einheiten;
-    private int zg; //zugehï¿½hrigkeit
+    private int zg; //zugehöhrigkeit
+    
+    private int x;
+    private int y;
 
     
     public Feld(String pID){
     	super(pID);
-    	einheiten = new ArrayList<>();
+    }
+    
+    public Feld(String pID, int pX, int pY){
+    	super(pID);
+    	x = pX;
+    	y = pY;
+    }
+    
+    public int getX(){
+    	return x;
+    }
+    
+    public int getY(){
+    	return y;
+    }
+    
+    public void setX(int pX){
+    	if(x==0)x = pX;
+    }
+    
+    public void setY(int pY){
+    	if(y==0)y = pY;
     }
     
     public void addUnit(String typ, int n){
@@ -43,24 +63,24 @@ public class Feld extends Vertex {
     	zg = pZg;
     }
     
-    public static ArrayList<Feld> getFelderFromTeam(ArrayList<Feld> felder, int teamId)
+    public static ArrayList<Feld> getFelderFromTeam(ArrayList<Feld> Gebiete, int teamId)
     {
     	ArrayList<Feld> result = new ArrayList<Feld>();
-    	for(Feld fl : felder)
+    	for(Feld fl : Gebiete)
 			if (fl.getZg() == teamId)
 				result.add(fl);
     	return result;
     }
     
-    public String toData() {
-		Gson gson = new Gson();
-		return gson.toJson(this);	
-	}
-	
-	public static Feld fromData(String data){
-		Gson gson = new Gson();
-		return gson.fromJson(data, Feld.class);		
-	}
-    
-    
+    public static Feld searchFeld(ArrayList<Feld> felder, String id)
+    {
+    	for(Feld fl : felder)
+    	{
+    		if(fl.equals(id))
+    		{
+    			return fl;
+    		}
+    	}
+    	return null;
+    }
 }

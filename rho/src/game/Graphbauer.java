@@ -11,7 +11,6 @@ import deps.Edge;
 import deps.Graph;
 import deps.Vertex;
 
-import game.Feld;
 
 /**
  * Diese Klasse erlaubt es, einen gewichteten, ungerichteten Graphen zu

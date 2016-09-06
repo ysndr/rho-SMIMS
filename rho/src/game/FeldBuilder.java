@@ -1,7 +1,5 @@
 package game;
 
-import game.Feld;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,7 +10,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import deps.*;
-import game.Graphbauer;
 
 public class FeldBuilder {
 
