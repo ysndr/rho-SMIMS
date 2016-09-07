@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import deps.*;
+import deps.Edge;
+import deps.Graph;
+import deps.List;
+import deps.Vertex;
 
 public class FeldBuilder {
 
@@ -18,12 +21,25 @@ public class FeldBuilder {
 	public static final String KOMMENTAR_BEGINN = "/";
 	
 	private HashMap<String, Feld> felderPool;
-
-	public FeldBuilder() {	
+	private Graphbauer gb;
+	
+	public FeldBuilder() {
 		felderPool = new HashMap<String, Feld>();	
+		gb = new Graphbauer();
 	}
-
-	public void readData(String pFilename) {
+	
+	
+	public void readEdges(String pFilename) {
+		try {
+			gb.fileToGraph(pFilename);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void readFelder(String pFilename) {
 
 		try {
 			BufferedReader brEdges = new BufferedReader(new FileReader(pFilename));
@@ -67,7 +83,32 @@ public class FeldBuilder {
 		}
 	}
 
-	public HashMap<String, Feld> getFelderPool(){
+	
+	/**
+	 * @return Eine mapping von feld-id nach Feld-Objekt
+	 */
+	public HashMap<String, Feld> getIdFeldMap(){
 		return felderPool;
 	}
+	
+	
+	/**
+	 * @return eine Liste aller Felder
+	 */
+	public ArrayList<Feld> getFelder() {
+		return new ArrayList<Feld>(felderPool.values());
+	}
+	
+	/**
+	 * @return den erzeugten graphen
+	 */
+	public Graph getGraph() {
+		return gb.getGraph();
+	}
+	
+	
+	
+	
+	
+	
 }

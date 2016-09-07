@@ -2,10 +2,14 @@ package game;
 
 import com.google.gson.Gson;
 
+/**
+ * @author lukas
+ *	Die Einheit, stellt die Soldaten auf einem Feld mit deren Anzahl und Typen dar.
+ */
 class Einheit{
-    
-	private int anzahl;
-    private String typ;
+
+	private int anzahl; //Die Anzahl an Soldaten
+    private String typ; //Der Typ (standartmaeﬂig "Soldat")
     
     
     public Einheit(String pTyp){

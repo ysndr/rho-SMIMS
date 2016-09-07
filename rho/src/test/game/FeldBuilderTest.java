@@ -12,26 +12,20 @@ import game.Graphbauer;
 public class FeldBuilderTest {
 
 	public FeldBuilderTest(){
+		
+		
 		FeldBuilder fb = new FeldBuilder();
-		fb.readData("txt/button-koordinaten.txt");
-		Graphbauer gb = new Graphbauer(fb.getFelderPool());
-		try {
-			gb.fileToGraph("txt/graphenbauanleitung.txt");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Graph erwuenschterGraph = gb.getGraph();
+		fb.readFelder("txt/button-koordinaten.txt");
+		fb.readEdges("txt/graphenbauanleitung.txt");
+		
+		Graph erwuenschterGraph = fb.getGraph();
 		List<Vertex> vertices = erwuenschterGraph.getVertices();
 		vertices.toFirst();
 		while (vertices.hasAccess()){
-			Vertex content = vertices.getContent();
-			System.out.print(content.getID()+": ");
-			if(content instanceof Feld){
-				Feld actFeld = (Feld) content;
-				if(actFeld.getX()==0 && actFeld.getY()==0)
-				System.out.print(actFeld.getX()+", "+actFeld.getY());
-			}
+			Vertex id = vertices.getContent();
+			Feld content = fb.getIdFeldMap().get(id);
+			
+			System.out.print(content.getID()+": ");			
 			vertices.next();
 			System.out.println();
 		}
