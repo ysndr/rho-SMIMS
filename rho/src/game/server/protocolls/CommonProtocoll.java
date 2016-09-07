@@ -6,6 +6,6 @@ public class CommonProtocoll {
 	public final static String OK = "OK";
 	public final static String MSG = "MSG";
 	
-	public final static String SEPERATOR = ":";
+	public final static String SEPERATOR = "::";
 	
 }
