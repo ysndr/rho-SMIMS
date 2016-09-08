@@ -60,7 +60,7 @@ public class Gebiet {
 		BufferedReader GebieteBR;
 		int zaehler = 0;
 		try {
-			GebieteBR = new BufferedReader(new FileReader("C:/Users/lukas/Desktop/SMIMS/current/rho/src/data/Gebieteordnung.txt"));
+			GebieteBR = new BufferedReader(new FileReader("data/Weltkarte/Gebiete.txt"));
 			String line = GebieteBR.readLine();
 			
 			while(line!=null && !line.equals("")) {
