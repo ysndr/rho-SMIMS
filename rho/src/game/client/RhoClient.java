@@ -9,31 +9,37 @@ import game.server.protocolls.ServerProtocoll;
 
 public class RhoClient extends Client {
 
+	private ClientAdapter handler;
+	
 	public RhoClient(String pServerIP, int pServerPort) {
 		super(pServerIP, pServerPort);
 	}
-
-	public ClientHandler getClientHandler() {
-		return ClientHandler.getClientHandler(this);
+	
+	public ClientAdapter getClientHandler() {
+		if (handler == null) {
+			handler = new ClientHandler(this);
+		}
+		return handler;
 	}
 
 	@Override
 	public void processMessage(String pMessage) {
-		ClientHandler handler = this.getClientHandler();
 		String[] messageComponents = pMessage.split(CommonProtocoll.SEPERATOR);
 		String key = messageComponents[0];
 		String[] content = Arrays.copyOfRange(messageComponents, 1, messageComponents.length -1);
 
 		switch (key) {
 		case ServerProtocoll.INFO:
-			handler.updateInfo(content);
+			handler.update(content);
 			break;
 		case ServerProtocoll.ERR:
-			handler.displayServerError(content);
+			((ClientHandler) handler).displayServerError(content);
 			break;
 		case ServerProtocoll.TURN_START:
-			handler.setupGame(content);
+			handler.setup(content);
 			break;
+		case ServerProtocoll.PLYR_CON:
+			handler.update(content);
 		default:
 			break;
 		}

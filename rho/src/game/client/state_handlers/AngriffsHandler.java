@@ -2,6 +2,7 @@ package game.client.state_handlers;
 
 import game.Feld;
 import game.GameInfo;
+import game.client.ClientAdapter;
 import game.client.ClientHandler;
 import game.client.NumberDeliverant;
 import game.server.protocolls.ClientProtocoll;
@@ -14,7 +15,7 @@ public class AngriffsHandler extends StateHandler {
 	private NumberDeliverant numberDeliverant;
 	
 	
-	public AngriffsHandler(GameInfo info, ClientHandler clientHandler, NumberDeliverant numberDeliverant) {
+	public AngriffsHandler(GameInfo info, ClientAdapter clientHandler, NumberDeliverant numberDeliverant) {
 		super(info, clientHandler);
 	}
 
@@ -40,8 +41,7 @@ public class AngriffsHandler extends StateHandler {
 						+ CommonProtocoll.SEPERATOR 
 						+ opponent.getID()
 						+ CommonProtocoll.SEPERATOR
-						+ "" + number);
-				
+						+ "" + number);				
 			}
 			
 		}

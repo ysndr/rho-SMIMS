@@ -12,22 +12,14 @@ import game.client.state_handlers.BewegungsHandler;
 import game.client.state_handlers.EmptyHandler;
 import game.client.state_handlers.StateHandler;
 import game.client.state_handlers.VersorgungsHandler;
+import game.server.protocolls.ClientProtocoll;
 import game.server.protocolls.CommonProtocoll;
 
 /**
  * @author yannik
  *
  */
-public class ClientHandler {
-
-	private static ClientHandler handler = null;
-	
-	public static ClientHandler getClientHandler(RhoClient client) {
-		if (handler == null) {
-			handler = new ClientHandler(client);
-		}
-		return handler;
-	}
+public class ClientHandler implements ClientAdapter{	
 	
 	private Callback onSetupChanged;
 	private RhoClient client;	
@@ -38,11 +30,11 @@ public class ClientHandler {
 	private GameInfo info;
 	
 	
-	private ClientHandler(RhoClient client) {
+	public ClientHandler(RhoClient client) {
 		this.client = client;
 	}
-	
-	public void setupGame(String[] message) {
+	@Override
+	public void setup(String[] message) {
 		String [] content = message;
 		int id = Integer.parseInt(content[0]);
 		Graphbauer gb = new Graphbauer();
@@ -56,7 +48,8 @@ public class ClientHandler {
 		this.client.sendReady();
 	}
 	
-	public void updateInfo(String[] json) {
+	@Override
+	public void update(String[] json) {
 		Gson gson = new Gson();
 		GameInfo info = gson.fromJson(json[0], GameInfo.class);
 		
@@ -70,20 +63,23 @@ public class ClientHandler {
 		case Truppenbewegung:
 			stateHandler = new BewegungsHandler(info, this);
 			break;
+		case nichtAngegeben:
+			// spieler laden --> kein Json sondern anahl spieler
+			performUpdate(null, null, Integer.parseInt(json[0]));
 		default:
 			stateHandler = new EmptyHandler(info, this);
-			break;
-		
-		
+			break;		
 		}
 		
 		
 		this.info = info;
+		performUpdate();
 	}
 	
 	public void displayServerError(String[] error) {
 		this.displayServerError(error[0]);
 	}
+	
 	
 	public void displayServerError(String error) {
 		displayError("Server-Error: " + error);
@@ -100,18 +96,26 @@ public class ClientHandler {
 	}
 	
 		
-	
+	@Override
 	public void send(String protocoll, String data) {
 		client.send(protocoll + CommonProtocoll.SEPERATOR + data);		
 	}	
 	
+	@Override
+	public void end() {
+		client.send(ClientProtocoll.TURN_ENDE);
+	}	
 	
 	// Callback
-	private void update() {
-		if (onSetupChanged != null) {
-			onSetupChanged.update();			
-		}		
+	private void performUpdate() {
+		performUpdate(info, map, playerID);			
 	}
+	
+	private void performUpdate(GameInfo info, Graph map, int sID) {
+		if (onSetupChanged != null) {
+			onSetupChanged.update(info, map, sID);			
+		}		
+	};
 	
 	public void setCallback(Callback cb) {
 		this.onSetupChanged = cb;		
@@ -119,7 +123,7 @@ public class ClientHandler {
 	
 	
 	public static interface Callback {
-		void update();
+		void update(GameInfo info, Graph map, int sID);
 	}
 	
 }

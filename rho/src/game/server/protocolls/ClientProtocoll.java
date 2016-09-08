@@ -9,4 +9,5 @@ public class ClientProtocoll extends CommonProtocoll {
 	public final static String TURN_ENDE = "TDONE";//TDONE
 	public final static String AG_ENDE = "ADONE";//ADONE
 	
+	
 }

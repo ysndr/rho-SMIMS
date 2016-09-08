@@ -2,8 +2,11 @@ package game.client.state_handlers;
 
 import game.Feld;
 import game.GameInfo;
+import game.client.ClientAdapter;
 import game.client.ClientHandler;
 import game.client.NumberDeliverant;
+import game.server.protocolls.ClientProtocoll;
+import game.server.protocolls.CommonProtocoll;
 
 public class BewegungsHandler extends StateHandler {
 
@@ -11,7 +14,7 @@ public class BewegungsHandler extends StateHandler {
 	private Feld other;
 	private NumberDeliverant numberDeliverant;
 	
-	public BewegungsHandler(GameInfo info, ClientHandler clientHandler) {
+	public BewegungsHandler(GameInfo info, ClientAdapter clientHandler) {
 		super(info, clientHandler);
 		// TODO Auto-generated constructor stub
 	}
@@ -29,7 +32,17 @@ public class BewegungsHandler extends StateHandler {
 			int einheiten = self.getEinheiten().size();
 			int possible = einheiten > 3 ? 3 : einheiten -1;
 			int number = (int) numberDeliverant.getNumber(possible);
-			if (number < 0) {}
+			if (number < 0) {
+				self = null;
+				other = null;				
+			} else {
+				clientHandler.send(ClientProtocoll.FELD_MOVE,
+						self.getID()
+						+ CommonProtocoll.SEPERATOR 
+						+ other.getID()
+						+ CommonProtocoll.SEPERATOR
+						+ "" + number);					
+			}
 		}
 	}
 

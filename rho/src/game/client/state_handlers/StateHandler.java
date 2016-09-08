@@ -2,13 +2,13 @@ package game.client.state_handlers;
 
 import game.Feld;
 import game.GameInfo;
-import game.client.ClientHandler;
+import game.client.ClientAdapter;
 
 public abstract class StateHandler {
 	
 	protected GameInfo info;
-	protected ClientHandler clientHandler;
-	public StateHandler(GameInfo info, ClientHandler clientHandler) {
+	protected ClientAdapter clientHandler;
+	public StateHandler(GameInfo info, ClientAdapter clientHandler) {
 		this.info = info;
 		this.clientHandler = clientHandler;
 	}
