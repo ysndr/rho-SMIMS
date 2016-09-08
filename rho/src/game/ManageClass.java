@@ -1,25 +1,30 @@
 package game;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import deps.Edge;
 import deps.List;
 import deps.Vertex;
+import util.Logbuch;
 
 public class ManageClass {
 
+	private Logbuch m_LogBuch;
 	private GameInfo gi;
-
 	private Kampfklasse m_kampfklasse; // Kampfklasse
-
 	private FeldBuilder fb;
+	private ErrorManaged m_ErrorManager;
 
 	public ManageClass() {
 		fb = new FeldBuilder();
-
-		gi.setM_Spieler(new ArrayList<Player>());
-		gi.setM_SpielStatus(SpielStatus.nichtAngegeben);
+		gi = new GameInfo();
+		try {
+			m_LogBuch = Logbuch.getLogbuch();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -31,7 +36,48 @@ public class ManageClass {
 			gi.getM_Spieler().add(spieler);
 		}
 	}
+	
+	public void removePlayer(Player spieler)
+	{
+		if (gi.getM_SpielStatus() == SpielStatus.nichtAngegeben) {
+			gi.getM_Spieler().remove(spieler);
+		}
+	}
 
+	
+	public void setup(){
+		String result;
+		FeldBuilder fb = new FeldBuilder();
+		result = fb.readFelder("Data/Weltkarte/Koordinaten.txt");
+		if (result != "")
+		{
+			m_ErrorManager.setErrorManaged(false);
+			try {
+				m_LogBuch.schreiben(result);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		gi.setM_Felder(fb.getFelder());
+		fb.readEdges("Data/Weltkarte/Graphen.txt");
+		if (result != "")
+		{
+			m_ErrorManager.setErrorManaged(false);
+			try {
+				m_LogBuch.schreiben(result);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		gi.setM_SpielPlan(fb.getGraph());
+		
+		/*gi.setM_Felder(new ArrayList<Feld>());
+		ArrayList<Vertex> vertextemp = convertAbiListToArrayList(gi.getM_SpielPlan().getVertices());
+		for (Vertex vt : vertextemp) {
+			gi.getM_Felder().add(new Feld(vt.getID()));
+		}*/
+		gi.setM_Gebiete(Gebiet.readGebiete());
+	}
 	/**
 	 * Das Spiel beginnt und wird initialisiert. Keine Spieler k�nnen nun zum
 	 * Spiel hinzugef�gt werden.
@@ -39,32 +85,24 @@ public class ManageClass {
 	public void beginn() {
 		if (gi.getM_SpielStatus() == SpielStatus.nichtAngegeben) {
 			if (gi.getM_Spieler() != null && !gi.getM_Spieler().isEmpty()) {
+				gi.setM_SpielStatus(SpielStatus.Vorbereitung);
 				gi.setM_Runde(0);
-				readGraph();
-
-				gi.setM_Felder(new ArrayList<Feld>());
-				ArrayList<Vertex> vertextemp = convertAbiListToArrayList(gi.getM_SpielPlan().getVertices());
-				for (Vertex vt : vertextemp) {
-					gi.getM_Felder().add(new Feld(vt.getID()));
-				}
-
-				gi.setM_Gebiete(Gebiet.readGebiete());
+				
 				gebietszuordnung();
 				gi.setM_TeamsTurn(gi.getM_Spieler().get(0).getTeam());
-				gi.setM_SpielStatus(SpielStatus.Vorbereitung);
-
+				
 				versorgung();
 			}
+			else
+			{
+				m_ErrorManager.setErrorManaged(false);
+				try {
+					m_LogBuch.schreiben("Spieler nicht vorhanden");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-	}
-
-	/**
-	 * Liest den Graphen ein
-	 */
-	private void readGraph() {
-		FeldBuilder fb = new FeldBuilder();
-		fb.readEdges("data/GraphbauerAnleitung.txt");
-		gi.setM_SpielPlan(fb.getGraph());
 	}
 
 	/**
@@ -124,6 +162,15 @@ public class ManageClass {
 					gi.setM_SpielStatus(SpielStatus.Angriff);
 				}
 			}
+			else
+			{
+				m_ErrorManager.setErrorManaged(false);
+				try {
+					m_LogBuch.schreiben("Die Einheit konnte nicht auf einem Feld platziert werden, da es nicht dem Spieler der am Zug ist geh�rt.");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -140,7 +187,7 @@ public class ManageClass {
 	 * 
 	 */
 	public void angreifen(String startId, String endId, int AnzUnits) {
-		if (gi.getM_SpielStatus() == SpielStatus.Angriff) {
+		if (gi.getM_SpielStatus() != SpielStatus.Angriff) {
 			return;
 		}
 
@@ -182,9 +229,24 @@ public class ManageClass {
 						}
 					}
 				}
+				else
+				{
+					try {
+						m_LogBuch.schreiben("Es wurde ein ung�ltiger Soldatentyp oder eine ung�ltige Anzahl an Soldaten f�r den Angriff ausgew�hlt");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
-
+		else
+		{
+			try {
+				m_LogBuch.schreiben("Ung�ltige Felder wurden f�r den Angriff gew�hlt");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -224,7 +286,21 @@ public class ManageClass {
 						Feld.searchFeld(gi.getM_Felder(), startid).addUnit("Soldat", -AnzUnits);
 						Feld.searchFeld(gi.getM_Felder(), endID).addUnit("Soldat", AnzUnits);
 					} else {
-						// Fehler!
+						m_ErrorManager.setErrorManaged(false);
+						try {
+							m_LogBuch.schreiben("Es wurden ung�ltige Felder f�r die Truppenbewegung ausgew�hlt");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				else
+				{
+					m_ErrorManager.setErrorManaged(false);
+					try {
+						m_LogBuch.schreiben("Ung�ltiger Armeetyp bei der Truppenbewegung ausgew�hlt.");
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -310,6 +386,11 @@ public class ManageClass {
 
 	public String gameInfoData() {
 		return gi.toData();
+	}
+	
+	public ArrayList<Feld> getAlleFelder()
+	{
+		return gi.getM_Felder();
 	}
 
 }

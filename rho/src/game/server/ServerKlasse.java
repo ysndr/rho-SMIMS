@@ -3,64 +3,83 @@ package game.server;
 import java.util.ArrayList;
 
 import deps.Server;
+import game.ErrorManaged;
 import game.ManageClass;
 import game.SpielStatus;
 import game.server.protocolls.ClientProtocoll;
 import game.server.protocolls.CommonProtocoll;
+import game.server.protocolls.ServerProtocoll;
+import util.Logbuch;
 
 public class ServerKlasse extends Server {
 
 	private ManageClass MC;
 	private ArrayList<Spieler> playerList;
 	int curTeam;
+	int lineNumber;
+	private ErrorManaged m_ErrorManager;
+
 
 	public ServerKlasse(int PortNr) {
 		super(PortNr);
 		MC = new ManageClass();
 		playerList = new ArrayList<Spieler>();
 		curTeam = 0;
+		lineNumber = Logbuch.readLog().size();
 	}
 
 	@Override
 	public void processNewConnection(String pClientIP, int pClientPort) {
 		if (MC.getStatus() == SpielStatus.nichtAngegeben) {
-			playerList.add(new Spieler(curTeam, pClientIP, pClientPort));
+			m_ErrorManager.setErrorManaged(true);
+			Spieler sp = new Spieler(curTeam, pClientIP, pClientPort); //�nderung
+			playerList.add(sp);
+			MC.addPlayer(sp);
 			curTeam += 1;
 			if (playerList.size() == 4) {
-				MC.beginn();
+				MC.setup();
+				int i = 0; 
 				for (Spieler s : playerList) {
-					send(s.getIP(), s.getPort(), MC.graphToString());
-
+					s.gameStart(i);
+					send(s.getIP(), s.getPort(),ServerProtocoll.TURN_START+ServerProtocoll.SEPERATOR+s.getTeam()+ServerProtocoll.SEPERATOR+MC.graphToString());
+					i++;
 				}
 			}
+			if (!m_ErrorManager.getErrorManaged())
+			{
+				ArrayList<String> log = Logbuch.readLog();
+				send(pClientIP,pClientPort,ServerProtocoll.ERR + ServerProtocoll.SEPERATOR + log.get(log.size()-1));
+				m_ErrorManager.setErrorManaged(true);
+			}
 		} else {
-			// sende error
+			errMessage(pClientIP, pClientPort, "Das Spiel hat bereits begonnen");
 		}
 	}
-
+	
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
+		m_ErrorManager.setErrorManaged(true);
 		for (Spieler plyr : playerList) {
 
-			if (plyr.getPort() != pClientPort) {
-				return;
+			if (plyr.getPort() != pClientPort || plyr.getIP() != pClientIP) {
+				continue;
 			}
 			
 			if (MC.getTeamsTurn() != plyr.getTeam()) {
 				errMessage(pClientIP, pClientPort, "Du bist nicht am Zug!");
 				return;
 			}
+			else
+			{
 				String[] stringar = pMessage.split(CommonProtocoll.SEPERATOR);
 				switch (stringar[0]) {
 				case ClientProtocoll.FELD_ADD:
 					if (MC.getStatus().equals(SpielStatus.Versorgung)) {
 						if (stringar.length != 3) {
 							errMessage(pClientIP, pClientPort, "add syntax");
-							break;
 						} else {
 							MC.versorgungButtonClicked(stringar[1], stringar[2]);
 							schickeFeld();
-
 						}
 					} else {
 						errMessage(pClientIP, pClientPort, "Nicht in Versorgungsphase");
@@ -109,6 +128,7 @@ public class ServerKlasse extends Server {
 				case ClientProtocoll.AG_ENDE:
 					if (MC.getStatus().equals(SpielStatus.Angriff)) {
 						MC.beendeAngriff();
+						schickeFeld();
 					} else {
 						errMessage(pClientIP, pClientPort, "AngriffBeenden in falscher Phase");
 					}
@@ -116,13 +136,39 @@ public class ServerKlasse extends Server {
 				case ClientProtocoll.TURN_ENDE:
 					if (MC.getStatus().equals(SpielStatus.Truppenbewegung)) {
 						MC.endTruppenbewegung();
+						schickeFeld();
 					} else {
 						errMessage(pClientIP, pClientPort, "EndTurn in falscher Phase");
 					}
 					break;
-
+					
+				
+				case ClientProtocoll.READY:
+					if(MC.getStatus().equals(SpielStatus.nichtAngegeben)){
+						if(!plyr.getReady()){
+							plyr.ready();
+							for(Spieler p: playerList){
+								if(!p.getReady()){
+									return;
+								}
+							}
+							MC.beginn();
+							schickeFeld();
+							break;
+						}
+					}
 				}
+				if (!m_ErrorManager.getErrorManaged())
+				{
+					ArrayList<String> log = Logbuch.readLog();
+					send(pClientIP,pClientPort,ServerProtocoll.ERR + ServerProtocoll.SEPERATOR + log.get(log.size()-1));
+					m_ErrorManager.setErrorManaged(true);
+				}
+				
+				return;
+				
 			}
+		}
 	}
 
 	private void errMessage(String pClientIP, int pClientPort, String fehler) {
@@ -136,7 +182,9 @@ public class ServerKlasse extends Server {
 				if (MC.getStatus() != SpielStatus.nichtAngegeben) {
 					MC.end();
 				}
+				MC.removePlayer(sp);
 				playerList.remove(sp);
+				
 			}
 		}
 
@@ -144,11 +192,22 @@ public class ServerKlasse extends Server {
 
 	private void schickeFeld() {
 		for (Spieler s : playerList) {
-			send(s.getIP(), s.getPort(), MC.gameInfoData());
+			send(s.getIP(), s.getPort(), ServerProtocoll.INFO + ServerProtocoll.SEPERATOR + MC.gameInfoData());
 		}
 
 		// send(pClientIP, pClientPort, MC.gameInfoData());
 		// Hier aktualisiertes Feld verschicken
 	}
-
+	
+	public ManageClass getMC(){
+		return MC;
+	}
+	
+	public void SendError(Spieler s){
+		ArrayList<String> l =Logbuch.readLog();
+		if(l.size() == lineNumber + 1){
+			send(s.getIP(), s.getPort(), ServerProtocoll.ERR+ServerProtocoll.SEPERATOR+l.get(lineNumber));
+			lineNumber+=1;
+		}
+	}
 }

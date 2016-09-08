@@ -5,14 +5,38 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.gson.annotations.Expose;
+
 public class Gebiet {
-	private int m_UnitBonus;
-	private ArrayList<String> m_FelderIds;
+	@Expose private int m_UnitBonus;
+	@Expose private ArrayList<String> m_FelderIds;
+	@Expose private String m_color;
 	
-	public Gebiet(int UnitBonus, ArrayList<String> FelderIds)
+	public Gebiet(int UnitBonus, ArrayList<String> FelderIds, int colorindex)
 	{
 		m_UnitBonus = UnitBonus;
 		m_FelderIds = FelderIds;
+		switch(colorindex)
+		{
+		case 0:
+			m_color = "ff8f00";
+			break;
+		case 1:
+			m_color = "18ffff";
+			break;
+		case 2:
+			m_color = "b71c1c";
+			break;
+		case 3:
+			m_color = "1b5e20";
+			break;
+		case 4:
+			m_color = "aa00ff";
+			break;
+		case 5:
+			m_color = "1a237e";
+			break;
+		}
 	}
 	
 	public int getGebietBonus()
@@ -25,13 +49,18 @@ public class Gebiet {
 		return m_FelderIds;
 	}
 	
+	public String getColor()
+	{
+		return m_color;
+	}
+	
 	public static ArrayList<Gebiet> readGebiete()
 	{
 		ArrayList<Gebiet> GebieteAL = new ArrayList<Gebiet>();		
 		BufferedReader GebieteBR;
-		
+		int zaehler = 0;
 		try {
-			GebieteBR = new BufferedReader(new FileReader("data/Gebieteordnung"));
+			GebieteBR = new BufferedReader(new FileReader("C:/Users/lukas/Desktop/SMIMS/current/rho/src/data/Gebieteordnung.txt"));
 			String line = GebieteBR.readLine();
 			
 			while(line!=null && !line.equals("")) {
@@ -46,7 +75,8 @@ public class Gebiet {
 						line = GebieteBR.readLine();
 					}
 					
-					GebieteAL.add(new Gebiet(BonusTMP,FelderIdsTMP));
+					GebieteAL.add(new Gebiet(BonusTMP,FelderIdsTMP, zaehler));
+					zaehler++;
 				}
 				line = GebieteBR.readLine();
 			}

@@ -1,6 +1,9 @@
 package game;
 
 import java.util.ArrayList;
+
+import com.google.gson.annotations.Expose;
+
 import deps.Vertex;
 
 /**
@@ -8,12 +11,12 @@ import deps.Vertex;
  *         Spielzugeh�rigkeit dar.
  */
 public class Feld extends Vertex {
-	private ArrayList<Einheit> einheiten; // Die Soldaten, die auf dem Spielfeld
+	@Expose private ArrayList<Einheit> einheiten; // Die Soldaten, die auf dem Spielfeld
 											// stehen
-	private int zg; // zugeh�hrigkeit (wessen Spieler das Feld geh�rt)
+	@Expose private int zg; // zugeh�hrigkeit (wessen Spieler das Feld geh�rt)
 
-	private int x; // Position x des Feldes
-	private int y; // Position y des Feldes
+	@Expose private int x; // Position x des Feldes
+	@Expose private int y; // Position y des Feldes
 
 	public Feld(String pID) {
 		this(pID, 1, 1);

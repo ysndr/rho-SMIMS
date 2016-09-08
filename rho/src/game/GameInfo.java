@@ -102,13 +102,13 @@ public class GameInfo {
 	
 	public String toData() {
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		String json = "MAP:" + gson.toJson(this);
+		String json = gson.toJson(this);
 		return json;
 	}
 	
 	public static GameInfo fromData(String pJson) {
 		Gson gson = new Gson();
-		GameInfo gi = gson.fromJson(pJson.substring(4), GameInfo.class);
+		GameInfo gi = gson.fromJson(pJson, GameInfo.class);
 		return gi;	
 	}
 

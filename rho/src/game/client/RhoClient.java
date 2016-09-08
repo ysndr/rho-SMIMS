@@ -1,5 +1,7 @@
 package game.client;
 
+import java.util.Arrays;
+
 import deps.Client;
 import game.server.protocolls.ClientProtocoll;
 import game.server.protocolls.CommonProtocoll;
@@ -20,7 +22,7 @@ public class RhoClient extends Client {
 		ClientHandler handler = this.getClientHandler();
 		String[] messageComponents = pMessage.split(CommonProtocoll.SEPERATOR);
 		String key = messageComponents[0];
-		String content = messageComponents[1];
+		String[] content = Arrays.copyOfRange(messageComponents, 1, messageComponents.length -1);
 
 		switch (key) {
 		case ServerProtocoll.INFO:

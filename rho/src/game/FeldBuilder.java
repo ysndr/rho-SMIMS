@@ -29,17 +29,18 @@ public class FeldBuilder {
 	}
 	
 	
-	public void readEdges(String pFilename) {
+	public String readEdges(String pFilename) {
 		try {
 			gb.fileToGraph(pFilename);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "Fehler beim einlesen des Graphen";
 		}
+		return "";
 	}
 	
 	
-	public void readFelder(String pFilename) {
+	public String readFelder(String pFilename) {
 
 		try {
 			BufferedReader brEdges = new BufferedReader(new FileReader(pFilename));
@@ -54,13 +55,14 @@ public class FeldBuilder {
 			brEdges.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "Die Felderdatei konnte nicht gefunden werden.";
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			return "Fehler beim einlesen der Felderdatei";
 		}
-
+		return "";
 	}
 
 	public void feldHinzu(String line) {
