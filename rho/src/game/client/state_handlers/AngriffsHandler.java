@@ -17,19 +17,21 @@ public class AngriffsHandler extends StateHandler {
 	
 	public AngriffsHandler(GameInfo info, ClientAdapter clientHandler, NumberDeliverant numberDeliverant) {
 		super(info, clientHandler);
+		this.numberDeliverant = numberDeliverant;
 	}
 
 	@Override
 	public void handleAction(Feld feld) {
 		if (self == null) {
-			if (self.getEinheiten().size() <= 1) return;		
+			if (feld.getEinheiten().get(0).getAnzahl() <= 1) return;		
 			self = feld;
 		}
-		else if (self == feld) {
+		else if (self.equals(feld)) {
 			self = null;			
 		}
 		else if (opponent == null) {
-			int einheiten = self.getEinheiten().size();
+			opponent = feld;
+			int einheiten = self.getEinheiten().get(0).getAnzahl();
 			int possible = einheiten > 3 ? 3 : einheiten -1;
 			int number = (int) numberDeliverant.getNumber(possible);
 			if (number < 0) {
@@ -41,11 +43,13 @@ public class AngriffsHandler extends StateHandler {
 						+ CommonProtocoll.SEPERATOR 
 						+ opponent.getID()
 						+ CommonProtocoll.SEPERATOR
-						+ "" + number);				
+						+ "" + number);		
+				self = null;
+				opponent = null;
 			}
 			
 		}
-		
+
 		// TODO Auto-generated method stub
 	}
 

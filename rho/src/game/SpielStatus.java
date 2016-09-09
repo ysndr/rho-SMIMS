@@ -6,6 +6,6 @@ public enum SpielStatus {
 	@SerializedName("nichtAngegeben") nichtAngegeben,
 	@SerializedName("Vorbereitung") Vorbereitung,
 	@SerializedName("Versorgung") Versorgung,
-	@SerializedName("Versorgung") Angriff,
-	@SerializedName("Versorgung") Truppenbewegung,
+	@SerializedName("Angriff") Angriff,
+	@SerializedName("Bewegung") Truppenbewegung,
 }

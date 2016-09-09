@@ -15,6 +15,7 @@ public class VersorgungsHandler extends StateHandler {
 
 	@Override
 	public void handleAction(Feld feld) {
+		System.out.println("Sende versorgung");
 		clientHandler.send(ClientProtocoll.FELD_ADD,
 				feld.getID()
 				+ CommonProtocoll.SEPERATOR 

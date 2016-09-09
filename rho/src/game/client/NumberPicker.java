@@ -6,7 +6,7 @@ public class NumberPicker implements NumberDeliverant {
 	@Override
 	public Number getNumber(Number maxValue) {
 		String[] possible = new String[(int) maxValue];
-		for (int i = 0; i < possible.length; i++) { possible[i] = "" + i; };
+		for (int i = 0; i < possible.length; i++) { possible[i] = "" + (i+1); };
 		String s = (String)JOptionPane.showInputDialog(
 				null,
 				"Anzahl Truppen",

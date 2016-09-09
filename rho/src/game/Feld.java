@@ -10,25 +10,31 @@ import deps.Vertex;
  * @author lukas Feld stellt ein Spielfeld mit dessen Soldaten und der
  *         Spielzugeh�rigkeit dar.
  */
-public class Feld extends Vertex {
+public class Feld {
 	@Expose private ArrayList<Einheit> einheiten; // Die Soldaten, die auf dem Spielfeld
 											// stehen
 	@Expose private int zg; // zugeh�hrigkeit (wessen Spieler das Feld geh�rt)
 
 	@Expose private int x; // Position x des Feldes
 	@Expose private int y; // Position y des Feldes
-
+	@Expose private String id;
+	
+	
 	public Feld(String pID) {
 		this(pID, 1, 1);
 	}
 
 	public Feld(String pID, int pX, int pY) {
-		super(pID);
+		id = pID;
 		x = pX;
 		y = pY;
 		einheiten = new ArrayList<>();
 	}
 
+	public String getID() {
+		return id;		
+	}
+	
 	public int getX() {
 		return x;
 	}

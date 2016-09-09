@@ -16,7 +16,6 @@ public class ManageClass {
 	private Kampfklasse m_kampfklasse; // Kampfklasse
 	private FeldBuilder fb;
 	private ErrorManaged m_ErrorManager;
-
 	public ManageClass() {
 		fb = new FeldBuilder();
 		gi = new GameInfo();
@@ -47,9 +46,9 @@ public class ManageClass {
 	
 	public void setup(){
 		String result;
-		FeldBuilder fb = new FeldBuilder();
-		result = fb.readFelder("Data/Weltkarte/Koordinaten.txt");
-		if (result != "")
+		fb = new FeldBuilder();
+		result = fb.readFelder("data/Weltkarte/Koordinaten.txt");
+		if (!result.equals(""))
 		{
 			m_ErrorManager.setErrorManaged(false);
 			try {
@@ -59,8 +58,8 @@ public class ManageClass {
 			}
 		}
 		gi.setM_Felder(fb.getFelder());
-		fb.readEdges("Data/Weltkarte/Graphen.txt");
-		if (result != "")
+		fb.readEdges("data/Weltkarte/Graphen.txt");
+		if (!result.equals(""))
 		{
 			m_ErrorManager.setErrorManaged(false);
 			try {
@@ -379,7 +378,7 @@ public class ManageClass {
 		for (; edges.hasAccess(); edges.next()) {
 			Vertex[] verticies = edges.getContent().getVertices();
 			double weight = edges.getContent().getWeight();
-			felder += weight + "," + verticies[0] + "," + verticies[1] + ";";
+			felder += weight + "," + verticies[0].getID() + "," + verticies[1].getID() + ";";
 		}
 		return felder;
 	}

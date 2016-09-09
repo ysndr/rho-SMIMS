@@ -7,7 +7,7 @@ public class Player {
 	public static String[] Colors = new String[] {
 			 "f44336" /*Rot*/,
 			 "2196f3" /*Blau*/,
-			 "8bc34a" /*Grün*/,
+			 "8bc34a" /*Grï¿½n*/,
 			 "ffc107" /*Gelb*/,
 			 "9c27b0" /*Lila*/,
 			 "3f51b5" /*Indigo*/,
@@ -40,7 +40,7 @@ public class Player {
 		}
 		else
 		{
-			color = "#000000";
+			color = "000000";
 		}
 	}
 	

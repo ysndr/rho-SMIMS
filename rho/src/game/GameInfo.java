@@ -15,13 +15,13 @@ public class GameInfo {
 	@Expose private SpielStatus m_SpielStatus; // Der Spielstatus des Spiels
 	@Expose private ArrayList<Player> m_Spieler; // Arraylist aller Spieler
 	
-	private Graph m_SpielPlan; // Der Graph der die Verkn�pfungen zwischen den
+	private Graph m_SpielPlan; // Der Graph der die Verknüpfungen zwischen den
 								// einzelnen Feldern speichert
 	@Expose private ArrayList<Feld> m_Felder; // ArrayList von allen Feldern
 	@Expose private ArrayList<Gebiet> m_Gebiete; // ArrayList von alles Gebieten
-	@Expose private int m_unitsPlacedNum; // tempor�re Variable die
+	@Expose private int m_unitsPlacedNum; // temporäre Variable die
 									// zwischenspeichert, wieviele Soldaten
-									// der Spieler w�hrend der
+									// der Spieler während der
 									// Versorgungsphase noch setzten darf
 
 	public GameInfo() {

@@ -19,7 +19,7 @@ import game.server.protocolls.CommonProtocoll;
  * @author yannik
  *
  */
-public class ClientHandler implements ClientAdapter{	
+public class ClientHandler implements ClientAdapter {	
 	
 	private Callback onSetupChanged;
 	private RhoClient client;	
@@ -33,6 +33,7 @@ public class ClientHandler implements ClientAdapter{
 	public ClientHandler(RhoClient client) {
 		this.client = client;
 	}
+	
 	@Override
 	public void setup(String[] message) {
 		String [] content = message;
@@ -58,14 +59,11 @@ public class ClientHandler implements ClientAdapter{
 			stateHandler = new VersorgungsHandler(info, this);
 			break;
 		case Angriff:
-			stateHandler = new AngriffsHandler(info, this, null);
+			stateHandler = new AngriffsHandler(info, this, new NumberPicker());
 			break;
 		case Truppenbewegung:
-			stateHandler = new BewegungsHandler(info, this);
+			stateHandler = new BewegungsHandler(info, this, new NumberPicker());
 			break;
-		case nichtAngegeben:
-			// spieler laden --> kein Json sondern anahl spieler
-			performUpdate(null, null, Integer.parseInt(json[0]));
 		default:
 			stateHandler = new EmptyHandler(info, this);
 			break;		

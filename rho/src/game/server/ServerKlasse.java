@@ -36,13 +36,21 @@ public class ServerKlasse extends Server {
 			playerList.add(sp);
 			MC.addPlayer(sp);
 			curTeam += 1;
-			if (playerList.size() == 4) {
+			System.out.println(pClientIP+":"+pClientPort);
+			if (playerList.size() == 2) { // 4
 				MC.setup();
 				int i = 0; 
 				for (Spieler s : playerList) {
 					s.gameStart(i);
 					send(s.getIP(), s.getPort(),ServerProtocoll.TURN_START+ServerProtocoll.SEPERATOR+s.getTeam()+ServerProtocoll.SEPERATOR+MC.graphToString());
 					i++;
+				}
+			}
+			else
+			{
+				for(int i = 0; i < playerList.size(); i++)
+				{
+					send(playerList.get(i).getIP(),playerList.get(i).getPort(),ServerProtocoll.PLYR_CON + ServerProtocoll.SEPERATOR + playerList.size());
 				}
 			}
 			if (!m_ErrorManager.getErrorManaged())
@@ -59,13 +67,14 @@ public class ServerKlasse extends Server {
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
 		m_ErrorManager.setErrorManaged(true);
+		System.out.println(pMessage);
 		for (Spieler plyr : playerList) {
-
-			if (plyr.getPort() != pClientPort || plyr.getIP() != pClientIP) {
+			
+			if (plyr.getPort() != pClientPort || !plyr.getIP().equals(pClientIP)) {
 				continue;
 			}
 			
-			if (MC.getTeamsTurn() != plyr.getTeam()) {
+			if (MC.getStatus() != SpielStatus.nichtAngegeben && MC.getTeamsTurn() != plyr.getTeam()) {
 				errMessage(pClientIP, pClientPort, "Du bist nicht am Zug!");
 				return;
 			}
@@ -88,7 +97,7 @@ public class ServerKlasse extends Server {
 					break;
 				case ClientProtocoll.FELD_ATK:
 					if (MC.getStatus().equals(SpielStatus.Angriff)) {
-						if (stringar.length != 4) {
+						if (stringar.length != 4) { 
 							errMessage(pClientIP, pClientPort, "atk syntax");
 						} else {
 							try {
@@ -125,20 +134,19 @@ public class ServerKlasse extends Server {
 					}
 
 					break;
-				case ClientProtocoll.AG_ENDE:
-					if (MC.getStatus().equals(SpielStatus.Angriff)) {
-						MC.beendeAngriff();
-						schickeFeld();
-					} else {
-						errMessage(pClientIP, pClientPort, "AngriffBeenden in falscher Phase");
-					}
-					break;
+				/*case ClientProtocoll.AG_ENDE:
+					
+					break;*/
 				case ClientProtocoll.TURN_ENDE:
 					if (MC.getStatus().equals(SpielStatus.Truppenbewegung)) {
 						MC.endTruppenbewegung();
 						schickeFeld();
+					}
+					else if (MC.getStatus().equals(SpielStatus.Angriff)) {
+						MC.beendeAngriff();
+						schickeFeld();
 					} else {
-						errMessage(pClientIP, pClientPort, "EndTurn in falscher Phase");
+						errMessage(pClientIP, pClientPort, "Zug kann in dieser Phase nicht beendet werden.");
 					}
 					break;
 					
