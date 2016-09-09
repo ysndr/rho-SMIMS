@@ -28,12 +28,12 @@ public class LoginScreen extends JFrame implements ActionListener {
 	private JButton m_EnterB;
 	
 	public static void main(String[] args){
-		RhoClient client = new RhoClient("localhost", 6631);
+		/*RhoClient client = new RhoClient("localhost", 6631);
 		if(client.isConnected()){
 			new Frame("ϱ-Risiko-online", client.getClientHandler()).setVisible(true);
 			
-		}
-		/*EventQueue.invokeLater(new Runnable() {
+		}*/
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					LoginScreen frame = new LoginScreen("ϱ-Risiko-online Loginscreen");
@@ -42,7 +42,7 @@ public class LoginScreen extends JFrame implements ActionListener {
 					e.printStackTrace();
 				}
 			}
-		});*/
+		});
 	}
 	
 	public LoginScreen(String head) {
