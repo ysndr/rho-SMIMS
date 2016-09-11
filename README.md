@@ -4,12 +4,12 @@ Dieses Programm ist das Ergebnis einer Projektarbeit im Rahmen der SMIMS 2016.
 Ziel des Projektes war die Umsetzung einer Mehrspieler-Netzwerk-Variante des Brettspiels [Risiko](https://de.wikipedia.org/wiki/Risiko_(Spiel)) auf Grundlage der Netzwerk-Abiturklassen des Landes NRW.
 
 Entwicklung der Idee, und Implementierung:
-	+ Michael Gordon
-	+ Lukas Herrmann
-	+ Constantin Mensendiek
-	+ Sebastian Knapp
-	+ Jan Rodriguez
-	+ und Yannik Sander
++ Michael Gordon
++ Lukas Herrmann
++ Constantin Mensendiek
++ Sebastian Kramm
++ Jan Rodriguez
++ und Yannik Sander
 
 Das Projekt wurde angeboten und unterstützt von Klaus Bovermann
 
